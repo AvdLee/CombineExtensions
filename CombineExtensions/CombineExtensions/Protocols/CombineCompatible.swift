@@ -7,5 +7,14 @@
 //
 
 import Foundation
+import UIKit
+import Combine
 
-protocol CombineCompatible { }
+public protocol CombineCompatible { }
+extension UIControl: CombineCompatible { }
+
+extension CombineCompatible {
+    public func assign<P: Publisher>(_ publisher: P, to keyPath: ReferenceWritableKeyPath<Self, P.Output>) -> AnyCancellable where P.Failure == Never {
+        return publisher.assign(to: keyPath, on: self)
+    }
+}

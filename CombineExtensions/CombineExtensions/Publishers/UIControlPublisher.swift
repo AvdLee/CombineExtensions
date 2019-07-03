@@ -40,15 +40,15 @@ final class UIControlSubscription<SubscriberType: Subscriber, Control: UIControl
 }
 
 /// A custom `Publisher` to work with our custom `UIControlSubscription`.
-struct UIControlPublisher<Control: UIControl>: Publisher {
+public struct UIControlPublisher<Control: UIControl>: Publisher {
 
-    typealias Output = Control
-    typealias Failure = Never
+    public typealias Output = Control
+    public typealias Failure = Never
 
     let control: Control
     let controlEvents: UIControl.Event
 
-    init(control: Control, events: UIControl.Event) {
+    public init(control: Control, events: UIControl.Event) {
         self.control = control
         self.controlEvents = events
     }
@@ -59,15 +59,14 @@ struct UIControlPublisher<Control: UIControl>: Publisher {
     /// - Parameters:
     ///     - subscriber: The subscriber to attach to this `Publisher`.
     ///                   once attached it can begin to receive values.
-    func receive<S>(subscriber: S) where S : Subscriber, S.Failure == UIControlPublisher.Failure, S.Input == UIControlPublisher.Output {
+    public func receive<S>(subscriber: S) where S : Subscriber, S.Failure == UIControlPublisher.Failure, S.Input == UIControlPublisher.Output {
         subscriber.receive(subscription: UIControlSubscription(subscriber: subscriber, control: control, event: controlEvents))
     }
 }
 
 /// Extending the `UIControl` types to be able to produce a `UIControl.Event` publisher.
-extension UIControl: CombineCompatible { }
 extension CombineCompatible where Self: UIControl {
-    func publisher(for events: UIControl.Event) -> UIControlPublisher<Self> {
+    public func publisher(for events: UIControl.Event) -> UIControlPublisher<Self> {
         return UIControlPublisher(control: self, events: events)
     }
 }
